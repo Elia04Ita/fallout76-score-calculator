@@ -442,8 +442,9 @@
 <div id="easter-egg-overlay">
     <img id="easter-egg-img" src="" alt="Easter Egg">
     <h1 id="easter-egg-text" style="display: none; color: #fbce41; font-family: monospace; font-size: 3rem; text-align: center; padding: 20px;"></h1>
-    <iframe id="easter-egg-video" style="display: none; width: 80%; height: 80%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div id="easter-egg-tweet" style="display: none;"></div>
 </div>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
     // Easter Egg
     // We target the 6 specific numeric inputs: currentLevel, targetLevel, daysRemaining, b1, b2, b3
@@ -460,7 +461,7 @@
     const eggOverlay = document.getElementById('easter-egg-overlay');
     const eggImg = document.getElementById('easter-egg-img');
     const eggText = document.getElementById('easter-egg-text');
-    const eggVideo = document.getElementById('easter-egg-video');
+    const eggTweet = document.getElementById('easter-egg-tweet');
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
 
@@ -468,16 +469,17 @@
     function closeOverlays() {
         ageOverlay.style.display = 'none';
         eggOverlay.style.display = 'none';
-        eggVideo.src = ""; // Stop video playback
+        // Clear tweet content to stop video playback
+        eggTweet.innerHTML = '';
     }
 
     btnYes.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Show Image, Hide Text/Video
+        // Show Image, Hide Text/Tweet
         eggImg.style.display = 'block';
         eggText.style.display = 'none';
-        eggVideo.style.display = 'none';
+        eggTweet.style.display = 'none';
         
         // Show NSFW gif
         eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
@@ -488,9 +490,9 @@
     btnNo.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Hide Image/Video, Show Text
+        // Hide Image/Tweet, Show Text
         eggImg.style.display = 'none';
-        eggVideo.style.display = 'none';
+        eggTweet.style.display = 'none';
         eggText.style.display = 'block';
         eggText.innerText = "Fuck off, this game is 18+. Also I'm telling your parents";
         
@@ -510,20 +512,25 @@
                 ageOverlay.style.display = 'flex';
             }
         } else if (allSixtySeven) {
-            // No warning, play video
+            // No warning, just show tweet
             if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
-                // Hide Image/Text, Show Video
+                // Hide Image/Text, Show Tweet
                 eggImg.style.display = 'none';
                 eggText.style.display = 'none';
-                eggVideo.style.display = 'block';
+                eggTweet.style.display = 'block';
                 
-                // YouTube Video: Family Guy - You sure you're not too tall for this?
-                // Start at 24s.
-                eggVideo.src = "https://www.youtube.com/embed/KBtEhSVeC_Q?start=24&autoplay=1";
+                // Embed Tweet
+                eggTweet.innerHTML = '<blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="560"><a href="https://twitter.com/x/status/1596654857347207170"></a></blockquote>';
                 
                 eggOverlay.style.display = 'flex';
-                // Let it play for 15 seconds
-                setTimeout(closeOverlays, 15000);
+                
+                // Reload widgets to render the new tweet
+                if (window.twttr && window.twttr.widgets) {
+                    window.twttr.widgets.load(eggTweet);
+                }
+                
+                // Longer timeout for video watching (20s)
+                setTimeout(closeOverlays, 20000);
             }
         }
     }
