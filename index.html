@@ -508,14 +508,16 @@
     btnNo.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Hide Image/Video, Show Text
-        eggImg.style.display = 'none';
-        eggVideo.style.display = 'none';
-        eggText.style.display = 'block';
-        eggText.innerText = "Fuck off, this game is 18+. Also I'm telling your parents";
-        
-        eggOverlay.style.display = 'flex';
-        setTimeout(closeOverlays, 4000);
+        if (currentTrigger === '69') {
+            // Hide Image/Video, Show Text
+            eggImg.style.display = 'none';
+            eggVideo.style.display = 'none';
+            eggText.style.display = 'block';
+            eggText.innerText = "Fuck off, this game is 18+. Also I'm telling your parents";
+            
+            eggOverlay.style.display = 'flex';
+            setTimeout(closeOverlays, 4000);
+        }
     });
 
     // Auto-close video when ended
