@@ -6,3 +6,4 @@ Link: https://elia04ita.github.io/fallout76-score-calculator/
 
 ![Made with Trae](made-with-trae.svg)
 
+![qr code](qr-code.svg)
