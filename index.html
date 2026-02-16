@@ -520,17 +520,37 @@
                 eggTweet.style.display = 'block';
                 
                 // Embed Tweet
-                eggTweet.innerHTML = '<blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="560"><a href="https://twitter.com/x/status/1596654857347207170"></a></blockquote>';
+                eggTweet.innerHTML = ''; // Clear previous content
                 
+                // Show the overlay immediately so the tweet can render properly
                 eggOverlay.style.display = 'flex';
-                
-                // Reload widgets to render the new tweet
+
+                // Create the tweet using the widget library for better control (if possible)
+                // We try to add autoplay and mute parameters which might help on some platforms
                 if (window.twttr && window.twttr.widgets) {
-                    window.twttr.widgets.load(eggTweet);
+                     window.twttr.widgets.createTweet(
+                        '1596654857347207170',
+                        eggTweet,
+                        {
+                            theme: 'dark',
+                            conversation: 'none',
+                            autoplay: true, // Attempt autoplay
+                            dnt: true
+                        }
+                    ).then(function (el) {
+                        // Attempt to autoplay via code if we can access the video element (unlikely cross-origin)
+                        // But we can try to find an iframe and postMessage if API supported? No standard API.
+                        // Just set timeout.
+                        setTimeout(closeOverlays, 3000);
+                    });
+                } else {
+                    // Fallback
+                     eggTweet.innerHTML = '<blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="560"><a href="https://twitter.com/x/status/1596654857347207170"></a></blockquote>';
+                     if (window.twttr && window.twttr.widgets) {
+                        window.twttr.widgets.load(eggTweet);
+                     }
+                     setTimeout(closeOverlays, 3000);
                 }
-                
-                // Longer timeout for video watching (20s)
-                setTimeout(closeOverlays, 20000);
             }
         }
     }
