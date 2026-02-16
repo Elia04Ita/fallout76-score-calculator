@@ -441,10 +441,9 @@
 
 <div id="easter-egg-overlay">
     <img id="easter-egg-img" src="" alt="Easter Egg">
+    <video id="easter-egg-video" style="display: none; max-width: 90%; max-height: 90%; box-shadow: 0 0 30px rgba(251, 206, 65, 0.6); border-radius: 12px;" controls></video>
     <h1 id="easter-egg-text" style="display: none; color: #fbce41; font-family: monospace; font-size: 3rem; text-align: center; padding: 20px;"></h1>
-    <div id="easter-egg-tweet" style="display: none;"></div>
 </div>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
     // Easter Egg
     // We target the 6 specific numeric inputs: currentLevel, targetLevel, daysRemaining, b1, b2, b3
@@ -460,8 +459,8 @@
     const ageOverlay = document.getElementById('age-verification-overlay');
     const eggOverlay = document.getElementById('easter-egg-overlay');
     const eggImg = document.getElementById('easter-egg-img');
+    const eggVideo = document.getElementById('easter-egg-video');
     const eggText = document.getElementById('easter-egg-text');
-    const eggTweet = document.getElementById('easter-egg-tweet');
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
 
@@ -469,17 +468,19 @@
     function closeOverlays() {
         ageOverlay.style.display = 'none';
         eggOverlay.style.display = 'none';
-        // Clear tweet content to stop video playback
-        eggTweet.innerHTML = '';
+        // Stop video
+        eggVideo.pause();
+        eggVideo.currentTime = 0;
+        eggVideo.src = "";
     }
 
     btnYes.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Show Image, Hide Text/Tweet
+        // Show Image, Hide Text/Video
         eggImg.style.display = 'block';
+        eggVideo.style.display = 'none';
         eggText.style.display = 'none';
-        eggTweet.style.display = 'none';
         
         // Show NSFW gif
         eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
@@ -490,15 +491,18 @@
     btnNo.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Hide Image/Tweet, Show Text
+        // Hide Image/Video, Show Text
         eggImg.style.display = 'none';
-        eggTweet.style.display = 'none';
+        eggVideo.style.display = 'none';
         eggText.style.display = 'block';
         eggText.innerText = "Fuck off, this game is 18+. Also I'm telling your parents";
         
         eggOverlay.style.display = 'flex';
         setTimeout(closeOverlays, 4000);
     });
+
+    // Auto-close video when ended
+    eggVideo.addEventListener('ended', closeOverlays);
 
     function checkEasterEgg() {
         // Check if ALL of them have value '69'
@@ -512,45 +516,21 @@
                 ageOverlay.style.display = 'flex';
             }
         } else if (allSixtySeven) {
-            // No warning, just show tweet
+            // No warning, just show video
             if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
-                // Hide Image/Text, Show Tweet
+                // Show Video, Hide Image/Text
                 eggImg.style.display = 'none';
                 eggText.style.display = 'none';
-                eggTweet.style.display = 'block';
+                eggVideo.style.display = 'block';
                 
-                // Embed Tweet
-                eggTweet.innerHTML = ''; // Clear previous content
+                // Play video
+                eggVideo.src = "https://api.x-downloader.com/v/2IEshN/The_Memes_Archive_-_kill_yourselves._peter_family_guy_reaction_video_quagmire_peter_g..._FdlxmV.mp4";
+                eggVideo.play().catch(e => console.error("Autoplay prevented:", e));
                 
-                // Show the overlay immediately so the tweet can render properly
                 eggOverlay.style.display = 'flex';
-
-                // Create the tweet using the widget library for better control (if possible)
-                // We try to add autoplay and mute parameters which might help on some platforms
-                if (window.twttr && window.twttr.widgets) {
-                     window.twttr.widgets.createTweet(
-                        '1596654857347207170',
-                        eggTweet,
-                        {
-                            theme: 'dark',
-                            conversation: 'none',
-                            autoplay: true, // Attempt autoplay
-                            dnt: true
-                        }
-                    ).then(function (el) {
-                        // Attempt to autoplay via code if we can access the video element (unlikely cross-origin)
-                        // But we can try to find an iframe and postMessage if API supported? No standard API.
-                        // Just set timeout.
-                        setTimeout(closeOverlays, 3000);
-                    });
-                } else {
-                    // Fallback
-                     eggTweet.innerHTML = '<blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="560"><a href="https://twitter.com/x/status/1596654857347207170"></a></blockquote>';
-                     if (window.twttr && window.twttr.widgets) {
-                        window.twttr.widgets.load(eggTweet);
-                     }
-                     setTimeout(closeOverlays, 3000);
-                }
+                // No timeout, rely on 'ended' event or user clicking away (if we added that, but we haven't)
+                // Just in case video fails or is very long, maybe a safety timeout? 
+                // The video title suggests it's a reaction video, probably short.
             }
         }
     }
