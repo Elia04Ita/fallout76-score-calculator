@@ -177,6 +177,30 @@
                         <input type="number" id="b3" value="60">
                     </div>
                 </div>
+
+                <div class="section-title">Current Week Status</div>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <input type="checkbox" id="weekliesCompleted" style="width: auto; margin-right: 10px;">
+                        <label for="weekliesCompleted" style="display: inline;">Weeklies Completed This Week</label>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <input type="checkbox" id="dailiesCompleted" style="width: auto; margin-right: 10px;">
+                        <label for="dailiesCompleted" style="display: inline;">Dailies Completed Today</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentDayOfWeek">Current Day of Week</label>
+                        <select id="currentDayOfWeek" style="width: 100%; padding: 0.75rem; background-color: #22272e; border: 1px solid #444c56; border-radius: 4px; font-size: 1rem; color: #e0e0e0; box-sizing: border-box;">
+                            <option value="7">7 days until reset</option>
+                            <option value="6">6 days until reset</option>
+                            <option value="5">5 days until reset</option>
+                            <option value="4">4 days until reset</option>
+                            <option value="3">3 days until reset</option>
+                            <option value="2">2 days until reset</option>
+                            <option value="1">1 day until reset</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="result-section">
                 <div id="result">
@@ -209,6 +233,11 @@
             const b1 = parseInt(document.getElementById('b1').value);
             const b2 = parseInt(document.getElementById('b2').value);
             const b3 = parseInt(document.getElementById('b3').value);
+            const weekliesCompleted = document.getElementById('weekliesCompleted').checked;
+            const dailiesCompleted = document.getElementById('dailiesCompleted').checked;
+            const currentDayOfWeekRaw = parseInt(document.getElementById('currentDayOfWeek').value); // 1-7 days until reset
+            // Convert 'days until reset' to an internal day-of-week representation (0-6, where 0 is the day of reset)
+            const currentDayOfWeek = (7 - currentDayOfWeekRaw) % 7; 
             const resultDiv = document.getElementById('result');
 
             if (isNaN(currentLevel) || isNaN(targetLevel) || isNaN(daysRemaining)) {
@@ -237,12 +266,29 @@
             let neededDailies = 0;
             let neededDailyPoints = 0;
             let neededWeeklyPoints = 0;
-            let numWeeks = Math.ceil(daysRemaining / 7); // Approximation for initial display, but we'll use actual count
-
+            
             // To calculate total points needed if you never leveled (for display)
             let staticScoreNeeded = 0;
             for (let l = currentLevel; l < targetLevel; l++) {
                 staticScoreNeeded += getScoreForLevel(l);
+            }
+
+            let numWeeks = 0; // Will be calculated in simulation
+
+            // Calculate the day offset for the first weekly reset
+            // If weeklies are completed, the first new weeklies will be available on the *next* Monday.
+            // If not completed, they are available on the *current* Monday (or day 1 of simulation if it's Monday).
+            let daysUntilFirstWeeklyReset;
+            if (weekliesCompleted) {
+                // If weeklies are completed, the next set becomes available after the current week ends.
+                // currentDayOfWeek is 0-6, where 0 is the day of reset (start of the week).
+                // If currentDayOfWeek is 0, it means 0 days have passed since reset, so 7 days until next reset.
+                // If currentDayOfWeek is 6, it means 6 days have passed since reset, so 1 day until next reset.
+                daysUntilFirstWeeklyReset = (7 - currentDayOfWeek);
+            } else {
+                // If weeklies are NOT completed, they are available from the very first day of the simulation.
+                // So, the first weekly contribution should happen on day 1.
+                daysUntilFirstWeeklyReset = 0;
             }
 
             // SIMULATION: Run for the full duration to get Total Potential
@@ -251,22 +297,27 @@
                 let currentBoost = getBoostAtLevel(simLevel, b1, b2, b3);
                 let multiplier = 1 + (currentBoost / 100);
 
-                // Add Daily
-                let dailyGained = Math.floor(BASE_DAILY * multiplier);
-                dailyTotalPoints += dailyGained;
-                totalScoreEarned += dailyGained;
-                if (simLevel < targetLevel) {
-                    scoreToNextLevel -= dailyGained;
-                }
-
-                // Add Weekly (on Day 1 and every 7 days)
-                if (day % 7 === 1) {
+                // Check for weekly reset
+                // The first weekly reset happens on `daysUntilFirstWeeklyReset + 1` (since day starts from 1)
+                // Subsequent resets happen every 7 days after that.
+                if (day === (daysUntilFirstWeeklyReset + 1) || (day > (daysUntilFirstWeeklyReset + 1) && (day - (daysUntilFirstWeeklyReset + 1)) % 7 === 0)) {
                     weekliesCount++;
                     let weeklyGained = Math.floor(BASE_WEEKLY * multiplier);
                     weeklyTotalPoints += weeklyGained;
                     totalScoreEarned += weeklyGained;
                     if (simLevel < targetLevel) {
                         scoreToNextLevel -= weeklyGained;
+                    }
+                }
+
+                // Add Daily
+                // Only add daily points if dailies are not completed for the first day, or if it's not the first day.
+                if (!(day === 1 && dailiesCompleted)) {
+                    let dailyGained = Math.floor(BASE_DAILY * multiplier);
+                    dailyTotalPoints += dailyGained;
+                    totalScoreEarned += dailyGained;
+                    if (simLevel < targetLevel) {
+                        scoreToNextLevel -= dailyGained;
                     }
                 }
 
@@ -342,6 +393,9 @@
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', calculate);
         });
+        document.getElementById('weekliesCompleted').addEventListener('change', calculate);
+        document.getElementById('dailiesCompleted').addEventListener('change', calculate);
+        document.getElementById('currentDayOfWeek').addEventListener('change', calculate);
 
         // Initial calculation on load
         window.addEventListener('load', calculate);
