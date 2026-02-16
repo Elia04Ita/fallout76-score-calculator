@@ -435,16 +435,36 @@
 </div>
 <script>
     // Easter Egg
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener('input', (e) => {
-            if (e.target.value === '69') {
-                const overlay = document.getElementById('easter-egg-overlay');
+    // We target the 6 specific numeric inputs: currentLevel, targetLevel, daysRemaining, b1, b2, b3
+    const easterEggInputs = [
+        document.getElementById('currentLevel'),
+        document.getElementById('targetLevel'),
+        document.getElementById('daysRemaining'),
+        document.getElementById('b1'),
+        document.getElementById('b2'),
+        document.getElementById('b3')
+    ];
+
+    function checkEasterEgg() {
+        // Check if ALL of them have value '69'
+        const allSixtyNine = easterEggInputs.every(input => input && input.value === '69');
+
+        if (allSixtyNine) {
+            const overlay = document.getElementById('easter-egg-overlay');
+            // Only show if not already visible to avoid re-triggering animation or timers unnecessarily
+            if (getComputedStyle(overlay).display === 'none') {
                 overlay.style.display = 'flex';
                 setTimeout(() => {
                     overlay.style.display = 'none';
                 }, 3000);
             }
-        });
+        }
+    }
+
+    easterEggInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('input', checkEasterEgg);
+        }
     });
 </script>
 </body>
