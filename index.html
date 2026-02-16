@@ -12,7 +12,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             margin: 0;
             padding: 20px;
         }
@@ -21,7 +20,7 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            width: 100%;
+            width: 90%;
             max-width: 950px;
             border: 1px solid #444c56;
         }
@@ -39,13 +38,20 @@
         }
         .input-section {
             flex: 1;
-            min-width: 320px;
         }
         .result-section {
             flex: 1.2;
-            min-width: 320px;
             display: flex;
             flex-direction: column;
+        }
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .input-section, .result-section {
+                width: 100%;
+                min-width: unset; /* Ensure no fixed min-width on small screens */
+            }
         }
         .section-title {
             color: #fbce41;
@@ -400,5 +406,10 @@
         // Initial calculation on load
         window.addEventListener('load', calculate);
     </script>
+    <footer style="position: fixed; bottom: 10px; right: 10px;">
+        <p style="font-size: 0.8em; color: #adbac7;">
+            Source code on GitHub: <a href="https://github.com/Elia04Ita/fallout76-score-calculator" target="_blank" style="color: #fbce41; text-decoration: none;">Elia04Ita/fallout76-score-calculator</a>
+        </p>
+    </footer>
 </body>
 </html>
