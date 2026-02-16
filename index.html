@@ -478,7 +478,7 @@
         // Show NSFW gif
         eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
         eggOverlay.style.display = 'flex';
-        setTimeout(closeOverlays, 8000);
+        setTimeout(closeOverlays, 6000);
     });
 
     btnNo.addEventListener('click', () => {
@@ -490,17 +490,32 @@
         eggText.innerText = "Fuck off, this game is 18+. Also I'm telling your parents";
         
         eggOverlay.style.display = 'flex';
-        setTimeout(closeOverlays, 8000);
+        setTimeout(closeOverlays, 4000);
     });
 
     function checkEasterEgg() {
         // Check if ALL of them have value '69'
         const allSixtyNine = easterEggInputs.every(input => input && input.value === '69');
+        // Check if ALL of them have value '67'
+        const allSixtySeven = easterEggInputs.every(input => input && input.value === '67');
 
         if (allSixtyNine) {
             // Only show if neither overlay is already visible
             if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
                 ageOverlay.style.display = 'flex';
+            }
+        } else if (allSixtySeven) {
+            // No warning, just show gif
+            if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
+                // Show Image, Hide Text
+                eggImg.style.display = 'block';
+                eggText.style.display = 'none';
+                
+                // Math Lady Confused Gif (fitting for a calculator)
+                eggImg.src = "https://media.giphy.com/media/WRQBXSCnEFJIuxktnw/giphy.gif";
+                
+                eggOverlay.style.display = 'flex';
+                setTimeout(closeOverlays, 3000);
             }
         }
     }
