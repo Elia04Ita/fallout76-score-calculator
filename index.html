@@ -442,7 +442,7 @@
 <div id="easter-egg-overlay">
     <img id="easter-egg-img" src="" alt="Easter Egg">
     <h1 id="easter-egg-text" style="display: none; color: #fbce41; font-family: monospace; font-size: 3rem; text-align: center; padding: 20px;"></h1>
-    <iframe id="easter-egg-video" style="display: none; width: 80%; height: 80%; border: none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <iframe id="easter-egg-video" style="display: none; width: 80%; height: 80%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 <script>
     // Easter Egg
@@ -517,8 +517,9 @@
                 eggText.style.display = 'none';
                 eggVideo.style.display = 'block';
                 
-                // YouTube Video: Family Guy - Peter is Taller
-                eggVideo.src = "https://www.youtube.com/embed/vYGxooA-E5c?autoplay=1";
+                // YouTube Video: Family Guy - You sure you're not too tall for this?
+                // Start at 24s.
+                eggVideo.src = "https://www.youtube.com/embed/KBtEhSVeC_Q?start=24&autoplay=1";
                 
                 eggOverlay.style.display = 'flex';
                 // Let it play for 15 seconds
