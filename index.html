@@ -430,8 +430,17 @@
         
     </script>
 </div>
+<div id="age-verification-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; flex-direction: column; z-index: 10000; color: #fbce41; font-family: monospace;">
+    <h2 style="margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">Warning: Mature Content</h2>
+    <p style="margin-bottom: 2rem; font-size: 1.2rem;">Are you over 18?</p>
+    <div style="display: flex; gap: 2rem;">
+        <button id="btn-yes" style="width: 100px; cursor: pointer;">YES</button>
+        <button id="btn-no" style="width: 100px; cursor: pointer; background-color: #444c56; color: #e0e0e0;">NO</button>
+    </div>
+</div>
+
 <div id="easter-egg-overlay">
-    <img src="https://media.giphy.com/media/pCO5tKdP22RC8/giphy.gif" alt="Nice">
+    <img id="easter-egg-img" src="" alt="Easter Egg">
 </div>
 <script>
     // Easter Egg
@@ -445,18 +454,52 @@
         document.getElementById('b3')
     ];
 
+    const ageOverlay = document.getElementById('age-verification-overlay');
+    const eggOverlay = document.getElementById('easter-egg-overlay');
+    const eggImg = document.getElementById('easter-egg-img');
+    const btnYes = document.getElementById('btn-yes');
+    const btnNo = document.getElementById('btn-no');
+
+    // Reset overlay state when closed
+    function closeOverlays() {
+        ageOverlay.style.display = 'none';
+        eggOverlay.style.display = 'none';
+    }
+
+    btnYes.addEventListener('click', () => {
+        ageOverlay.style.display = 'none';
+        // Show NSFW gif
+        eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
+        eggOverlay.style.display = 'flex';
+        setTimeout(closeOverlays, 3000);
+    });
+
+    btnNo.addEventListener('click', () => {
+        ageOverlay.style.display = 'none';
+        // Show safe gif (e.g. the previous "Nice" one or a disapproval one)
+        // Using a "police" or "bonk" gif would be funny, but let's stick to a safe alternative or the previous "Nice" one
+        // Let's use a "Safety First" or similar appropriate gif. 
+        // For now, I'll use a funny "You are too young" or standard "Nice" gif but safe.
+        // Let's go with a safe Fallout related gif or just the previous "Nice" one.
+        // The user asked for a "different gif".
+        eggImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm90Zm91bmQ/giphy.gif"; // Placeholder or safe gif
+        // Actually let's use a known safe "Good job" or "Safe" gif.
+        // Let's use the previous South Park "Nice" gif as the "Safe" option, or maybe a "Police" one.
+        // Let's use the classic South Park "Nice" gif for "No" (Safe)
+        eggImg.src = "https://media.giphy.com/media/pCO5tKdP22RC8/giphy.gif";
+        
+        eggOverlay.style.display = 'flex';
+        setTimeout(closeOverlays, 3000);
+    });
+
     function checkEasterEgg() {
         // Check if ALL of them have value '69'
         const allSixtyNine = easterEggInputs.every(input => input && input.value === '69');
 
         if (allSixtyNine) {
-            const overlay = document.getElementById('easter-egg-overlay');
-            // Only show if not already visible to avoid re-triggering animation or timers unnecessarily
-            if (getComputedStyle(overlay).display === 'none') {
-                overlay.style.display = 'flex';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 3000);
+            // Only show if neither overlay is already visible
+            if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
+                ageOverlay.style.display = 'flex';
             }
         }
     }
