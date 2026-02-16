@@ -431,8 +431,8 @@
     </script>
 </div>
 <div id="age-verification-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; flex-direction: column; z-index: 10000; color: #fbce41; font-family: monospace;">
-    <h2 style="margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">Warning: Mature Content</h2>
-    <p style="margin-bottom: 2rem; font-size: 1.2rem;">Are you over 18?</p>
+    <h2 id="warning-title" style="margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">Warning: Mature Content</h2>
+    <p id="warning-text" style="margin-bottom: 2rem; font-size: 1.2rem; text-align: center; max-width: 80%;">Are you over 18?</p>
     <div style="display: flex; gap: 2rem;">
         <button id="btn-yes" style="width: 100px; cursor: pointer;">YES</button>
         <button id="btn-no" style="width: 100px; cursor: pointer; background-color: #444c56; color: #e0e0e0;">NO</button>
@@ -457,12 +457,16 @@
     ];
 
     const ageOverlay = document.getElementById('age-verification-overlay');
+    const warningTitle = document.getElementById('warning-title');
+    const warningText = document.getElementById('warning-text');
     const eggOverlay = document.getElementById('easter-egg-overlay');
     const eggImg = document.getElementById('easter-egg-img');
     const eggVideo = document.getElementById('easter-egg-video');
     const eggText = document.getElementById('easter-egg-text');
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
+
+    let currentTrigger = null; // '69' or '67'
 
     // Reset overlay state when closed
     function closeOverlays() {
@@ -477,15 +481,28 @@
     btnYes.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
         
-        // Show Image, Hide Text/Video
-        eggImg.style.display = 'block';
-        eggVideo.style.display = 'none';
-        eggText.style.display = 'none';
-        
-        // Show NSFW gif
-        eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
-        eggOverlay.style.display = 'flex';
-        setTimeout(closeOverlays, 6000);
+        if (currentTrigger === '69') {
+            // Show Image, Hide Text/Video
+            eggImg.style.display = 'block';
+            eggVideo.style.display = 'none';
+            eggText.style.display = 'none';
+            
+            // Show NSFW gif
+            eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
+            eggOverlay.style.display = 'flex';
+            setTimeout(closeOverlays, 6000);
+        } else if (currentTrigger === '67') {
+            // Show Video, Hide Image/Text
+            eggImg.style.display = 'none';
+            eggText.style.display = 'none';
+            eggVideo.style.display = 'block';
+            
+            // Play video
+            eggVideo.src = "https://api.x-downloader.com/v/2IEshN/The_Memes_Archive_-_kill_yourselves._peter_family_guy_reaction_video_quagmire_peter_g..._FdlxmV.mp4";
+            eggVideo.play().catch(e => console.error("Autoplay prevented:", e));
+            
+            eggOverlay.style.display = 'flex';
+        }
     });
 
     btnNo.addEventListener('click', () => {
@@ -513,24 +530,18 @@
         if (allSixtyNine) {
             // Only show if neither overlay is already visible
             if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
+                currentTrigger = '69';
+                warningTitle.innerText = "Warning: Mature Content";
+                warningText.innerText = "Are you over 18?";
                 ageOverlay.style.display = 'flex';
             }
         } else if (allSixtySeven) {
-            // No warning, just show video
+            // Only show if neither overlay is already visible
             if (getComputedStyle(ageOverlay).display === 'none' && getComputedStyle(eggOverlay).display === 'none') {
-                // Show Video, Hide Image/Text
-                eggImg.style.display = 'none';
-                eggText.style.display = 'none';
-                eggVideo.style.display = 'block';
-                
-                // Play video
-                eggVideo.src = "https://api.x-downloader.com/v/2IEshN/The_Memes_Archive_-_kill_yourselves._peter_family_guy_reaction_video_quagmire_peter_g..._FdlxmV.mp4";
-                eggVideo.play().catch(e => console.error("Autoplay prevented:", e));
-                
-                eggOverlay.style.display = 'flex';
-                // No timeout, rely on 'ended' event or user clicking away (if we added that, but we haven't)
-                // Just in case video fails or is very long, maybe a safety timeout? 
-                // The video title suggests it's a reaction video, probably short.
+                currentTrigger = '67';
+                warningTitle.innerText = "Warning: Dark Humor";
+                warningText.innerText = "The following is a joke, we do not support self harm, if you are ok with it click yes";
+                ageOverlay.style.display = 'flex';
             }
         }
     }
