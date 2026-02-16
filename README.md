@@ -4,8 +4,6 @@ This is a simple web-based calculator to help Fallout 76 players track their Sea
 
 Link: https://elia04ita.github.io/fallout76-score-calculator/
 
-![Made with Trae](made-with-trae.svg)
-
 If you want to use this on mobile (for some reason)
 
 <p align="center">
