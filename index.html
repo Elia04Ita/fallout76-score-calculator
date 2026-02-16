@@ -441,6 +441,7 @@
 
 <div id="easter-egg-overlay">
     <img id="easter-egg-img" src="" alt="Easter Egg">
+    <h1 id="easter-egg-text" style="display: none; color: #fbce41; font-family: monospace; font-size: 3rem; text-align: center; padding: 20px;"></h1>
 </div>
 <script>
     // Easter Egg
@@ -457,6 +458,7 @@
     const ageOverlay = document.getElementById('age-verification-overlay');
     const eggOverlay = document.getElementById('easter-egg-overlay');
     const eggImg = document.getElementById('easter-egg-img');
+    const eggText = document.getElementById('easter-egg-text');
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
 
@@ -468,6 +470,11 @@
 
     btnYes.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
+        
+        // Show Image, Hide Text
+        eggImg.style.display = 'block';
+        eggText.style.display = 'none';
+        
         // Show NSFW gif
         eggImg.src = "https://wimg.rule34.xxx//images/844/435af96ebe862843b39c9928bc3912407cd9301f.gif?10530254";
         eggOverlay.style.display = 'flex';
@@ -476,17 +483,11 @@
 
     btnNo.addEventListener('click', () => {
         ageOverlay.style.display = 'none';
-        // Show safe gif (e.g. the previous "Nice" one or a disapproval one)
-        // Using a "police" or "bonk" gif would be funny, but let's stick to a safe alternative or the previous "Nice" one
-        // Let's use a "Safety First" or similar appropriate gif. 
-        // For now, I'll use a funny "You are too young" or standard "Nice" gif but safe.
-        // Let's go with a safe Fallout related gif or just the previous "Nice" one.
-        // The user asked for a "different gif".
-        eggImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm90Zm91bmQ/giphy.gif"; // Placeholder or safe gif
-        // Actually let's use a known safe "Good job" or "Safe" gif.
-        // Let's use the previous South Park "Nice" gif as the "Safe" option, or maybe a "Police" one.
-        // Let's use the classic South Park "Nice" gif for "No" (Safe)
-        eggImg.src = "https://media.giphy.com/media/pCO5tKdP22RC8/giphy.gif";
+        
+        // Hide Image, Show Text
+        eggImg.style.display = 'none';
+        eggText.style.display = 'block';
+        eggText.innerText = "Fuck off, this game is 18+";
         
         eggOverlay.style.display = 'flex';
         setTimeout(closeOverlays, 3000);
