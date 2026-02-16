@@ -11,5 +11,5 @@ Link: https://elia04ita.github.io/fallout76-score-calculator/
 If you want to use this on mobile
 
 <p align="center">
-  <img src="qr-code.svg" alt="qr code">
+  <img src="qr-code.svg" alt="qr code" width="200" height="200">
 </p>
